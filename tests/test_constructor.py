@@ -2,11 +2,19 @@ from locators.constructor_locators import ConstructorLocators
 
 
 class TestConstructorTabs:
+
     def test_constructor_tab_buns_can_be_opened(self, main_page):
-        # Проверяет открытие вкладки "Булки" в конструкторе.
-        main_page.open_main()
-        main_page.open_tab_buns()
-        assert main_page.wait_visible(ConstructorLocators.BUNS_INGREDIENT).is_displayed()
+
+    # Открываем главную страницу
+         main_page.open_main()
+
+    # Переходим на вкладку «Булки»
+         main_page.open_tab_buns()
+
+    # Проверяем, что таб «Булки» стал активным
+         assert main_page.is_tab_buns_active(), (
+        "Вкладка «Булки» не стала активной после переключения"
+         )
 
     def test_constructor_tab_sauces_can_be_opened(self, main_page):
         # Проверяет открытие вкладки "Соусы" в конструкторе.
