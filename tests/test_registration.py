@@ -1,44 +1,54 @@
-from locators.auth_locators import AuthLocators
+from helpers import generate_random_credentials, generate_invalid_password
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
+from url import MAIN_URL
+from locators import Registration_Locators
 
-class TestRegistration:
-    def test_registration_with_valid_data_redirects_to_login(
-        self, auth_page, user_credentials
-    ):
-        # Проверяет успешную регистрацию и редирект на страницу входа.
-        auth_page.open_register()
-        auth_page.register(
-            name=user_credentials["name"],
-            email=user_credentials["email"],
-            password=user_credentials["password"],
-        )
-        auth_page.wait_url_contains("/login")
-        assert auth_page.wait_visible(AuthLocators.LOGIN_TITLE).text == "Вход"
+class TestRegister:
 
-    def test_registration_with_short_password_shows_validation_error(
-        self, auth_page, user_credentials
-    ):
-        # Проверяет ошибку валидации для короткого пароля при регистрации.
-        auth_page.open_register()
-        auth_page.register(
-            name=user_credentials["name"],
-            email=user_credentials["email"],
-            password="12345",
-        )
-        assert auth_page.wait_visible(
-            AuthLocators.INVALID_PASSWORD_ERROR
-        ).is_displayed()
+    def test_successful_registration(self, driver):
+        
+        name, email, password = generate_random_credentials()
 
-    def test_registration_with_empty_name_does_not_create_user(
-        self, auth_page, user_credentials
-    ):
-        # Проверяет, что поле "Имя" обязательно не пустое
-        auth_page.open_register()
-        auth_page.register(
-            name="",
-            email=user_credentials["email"],
-            password=user_credentials["password"],
-        )
-        assert "/register" in auth_page.driver.current_url
-        assert auth_page.wait_visible(AuthLocators.REGISTER_TITLE).is_displayed()
-        assert not auth_page.is_visible(AuthLocators.LOGIN_TITLE, timeout=2)
+        driver.get(MAIN_URL)
+        
+        driver.find_element(*Registration_Locators.PERSONAL_ACCOUNT_BUTTON).click()
+        WebDriverWait(driver, 8).until(EC.visibility_of_element_located(Registration_Locators.REGISTER_LINK))
+        
+        driver.find_element(*Registration_Locators.REGISTER_LINK).click()
+
+        driver.find_element(*Registration_Locators.NAME_FIELD).send_keys(name)
+        driver.find_element(*Registration_Locators.EMAIL_FIELD).send_keys(email)
+        driver.find_element(*Registration_Locators.PASSWORD_FIELD).send_keys(password)
+        driver.find_element(*Registration_Locators.REGISTER_BUTTON).click()
+
+        WebDriverWait(driver, 8).until(EC.visibility_of_element_located(Registration_Locators.LOGIN_BUTTON))
+
+        driver.find_element(*Registration_Locators.EMAIL_FIELD).send_keys(email)
+        driver.find_element(*Registration_Locators.PASSWORD_FIELD).send_keys(password)
+        driver.find_element(*Registration_Locators.LOGIN_BUTTON).click()
+        WebDriverWait(driver, 8).until(EC.visibility_of_element_located(Registration_Locators.ORDER_BUTTON))
+        
+        assert driver.current_url == MAIN_URL
+
+    
+    def test_registration_invalid_password(self, driver):
+        
+        name, email, invalid_password = generate_invalid_password()
+
+        driver.get(MAIN_URL)
+        
+        driver.find_element(*Registration_Locators.PERSONAL_ACCOUNT_BUTTON).click()
+        WebDriverWait(driver, 8).until(EC.visibility_of_element_located(Registration_Locators.REGISTER_LINK))
+        
+        driver.find_element(*Registration_Locators.REGISTER_LINK).click()
+
+        driver.find_element(*Registration_Locators.NAME_FIELD).send_keys(name)
+        driver.find_element(*Registration_Locators.EMAIL_FIELD).send_keys(email)
+        driver.find_element(*Registration_Locators.PASSWORD_FIELD).send_keys(invalid_password)
+        driver.find_element(*Registration_Locators.REGISTER_BUTTON).click()
+
+        WebDriverWait(driver, 8).until(EC.visibility_of_element_located(Registration_Locators.INCORRECT_PASSWORD_MESSAGE))
+
+        assert "Некорректный пароль" in driver.find_element(*Registration_Locators.INCORRECT_PASSWORD_MESSAGE).text
