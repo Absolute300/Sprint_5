@@ -29,8 +29,7 @@ class Registration_Locators:
 
     LOGOUT_BUTTON = (By.XPATH, "//button[contains(text(), 'Выход')]") # Кнопка «Выход»
 
-    SAUCES_SECTION = (By.XPATH, "//span[contains(text(), 'Соусы')]") # Раздел «Соусы»
-    BUNS_SECTION = (By.XPATH, "//span[contains(text(), 'Булки')]") # Раздел «Булки»
-    FILLING_SECTION = (By.XPATH, "//span[contains(text(), 'Начинки')]") # Раздел «Начинки»
-
-    SELECTED_SECTION = (By.XPATH, "//div[contains(@class, 'tab_tab_type_current')]") # Активный раздел конструктора
+    BUNS_SECTION = (By.XPATH, "//span[text()='Булки']/ancestor::div[contains(@class, 'tab_tab')]")
+    SAUCES_SECTION = (By.XPATH, "//span[text()='Соусы']/ancestor::div[contains(@class, 'tab_tab')]")
+    FILLING_SECTION = (By.XPATH, "//span[text()='Начинки']/ancestor::div[contains(@class, 'tab_tab')]")
+    SELECTED_SECTION = (By.XPATH, "//div[contains(@class, 'tab_tab_type_current')]//span")
