@@ -35,6 +35,10 @@ class TestNavigationMenuSection:
         # Переходим на вкладку «Соусы»
         self.switch_to_section(driver, Registration_Locators.SAUCES_SECTION, "Соусы")
 
+        # Ассерт: проверяем, что активный раздел — «Соусы»
+        active_section = driver.find_element(*Registration_Locators.SELECTED_SECTION).text
+        assert active_section == "Соусы", f"Ожидался раздел 'Соусы', но отображается '{active_section}'"
+
 
     # Переход из раздела «Соусы» в раздел «Начинки»
     def test_sauces_to_filling(self, driver):    
@@ -53,6 +57,10 @@ class TestNavigationMenuSection:
         self.switch_to_section(driver, Registration_Locators.SAUCES_SECTION, "Соусы")
         # Затем переходим на «Начинки»
         self.switch_to_section(driver, Registration_Locators.FILLING_SECTION, "Начинки")    
+
+         # Ассерт: проверяем, что сейчас активен раздел «Начинки»
+        active_section = driver.find_element(*Registration_Locators.SELECTED_SECTION).text
+        assert active_section == "Начинки", f"Ожидался раздел 'Начинки', но отображается '{active_section}'"
     
     # Переход из раздела «Начинки» в раздел «Булки» 
     def test_filling_to_buns(self, driver):    
@@ -71,3 +79,7 @@ class TestNavigationMenuSection:
         self.switch_to_section(driver, Registration_Locators.FILLING_SECTION, "Начинки")
         # Затем на «Булки»
         self.switch_to_section(driver, Registration_Locators.BUNS_SECTION, "Булки")
+
+        # Ассерт: проверяем, что вернулись к разделу «Булки»
+        active_section = driver.find_element(*Registration_Locators.SELECTED_SECTION).text
+        assert active_section == "Булки", f"Ожидался раздел 'Булки', но отображается '{active_section}'"
