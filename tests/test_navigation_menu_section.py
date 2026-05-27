@@ -53,10 +53,10 @@ class TestNavigationMenuSection:
         driver.find_element(*Registration_Locators.LOGIN_BUTTON).click()
         WebDriverWait(driver, 8).until(EC.visibility_of_element_located(Registration_Locators.ORDER_BUTTON))
 
-                # Сначала убеждаемся, что мы на «Соусы»
+                # Прямой переход: Булки → Соусы → Начинки
         self.switch_to_section(driver, Registration_Locators.SAUCES_SECTION, "Соусы")
-        # Затем переходим на «Начинки»
-        self.switch_to_section(driver, Registration_Locators.FILLING_SECTION, "Начинки")    
+        self.switch_to_section(driver, Registration_Locators.FILLING_SECTION, "Начинки")
+
 
          # Ассерт: проверяем, что сейчас активен раздел «Начинки»
         active_section = driver.find_element(*Registration_Locators.SELECTED_SECTION).text
